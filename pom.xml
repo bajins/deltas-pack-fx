@@ -8,7 +8,7 @@
     <groupId>com.bajins</groupId>
     <!-- The name of the artifact within the group,usually a project name -->
     <artifactId>deltas-pack-fx</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>deltas-pack-fx</name>
     <packaging>jar</packaging>
 
@@ -107,7 +107,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -138,7 +138,7 @@
                     <noManPages>true</noManPages>
                     <launcher>launcher</launcher>
                     <jlinkImageName>output</jlinkImageName>
-                    <jlinkZipName>incPackFx</jlinkZipName>
+                    <jlinkZipName>deltasPackFx</jlinkZipName>
                     <mainClass>Main</mainClass>
                 </configuration>
             </plugin>-->
