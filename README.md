@@ -47,3 +47,9 @@ TODO
 支持Maven，思路：如果没有选择Maven目录，先查找项目中是否有创建项目时生成的相关脚本，如果没有则使用全局变量，如果还没有就查找变量中是否有Maven目录，没有则报错Maven路径必须选择
 
 gradle思路暂时与Maven一致
+
+
+Screenshot
+===
+
+![image](https://user-images.githubusercontent.com/30252550/127959614-c2e35dd9-45b7-4d37-9095-af1a8de39708.png)
