@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="/css/main.css,/css/validation.css" prefHeight="-1" prefWidth="-1" minWidth="-1" minHeight="-1"
+            fx:controller="com.bajins.deltaspackfx.controller.MainController">
+    <top>
+        <!--<ButtonBar>
+            <buttons>
+                <Button text="本地检查"/>
+                <Button text="SVN检查"/>
+            </buttons>
+        </ButtonBar>-->
+        <!--<AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <Button layoutX="16.0" layoutY="17.0" mnemonicParsing="false" text="本地检查"
+                    AnchorPane.leftAnchor="20.0"/>
+            <Button layoutX="16.0" layoutY="17.0" mnemonicParsing="false" text="SVN检查" AnchorPane.rightAnchor="30.0"
+                    onAction="#packageProject"/>
+        </AnchorPane>-->
+        <MenuBar useSystemMenuBar="true">
+            <!-- Menu默认的点击事件是作用于它的子菜单MenuItem身上的，如果要实现它自己的点击事件，需要使用它的graphic属性 -->
+            <Menu id="local_menu" fx:id="localMenu">
+                <!--<padding>
+                    <Insets bottom="-1.5" left="-1.5" right="-1.5" top="-1.5" />
+                </padding>-->
+                <!--<MenuItem text="1111" id="top1"/>-->
+                <graphic>
+                    <Label text="本地检查" id="local_menu_label" onMouseClicked="#checkLocalPane"
+                           fx:id="localMenuLabel"/>
+                </graphic>
+            </Menu>
+            <Menu fx:id="svnMenu">
+                <graphic>
+                    <Label text="SVN检查" onMouseClicked="#checkSvnPane" fx:id="svnMenuLabel"/>
+                </graphic>
+            </Menu>
+            <Menu text="帮助" id="help">
+                <MenuItem text="关于" id="about" onAction="#clickAboutPane"/>
+                <MenuItem text="license" id="license" onAction="#clickLicensePane"/>
+            </Menu>
+        </MenuBar>
+    </top>
+    <center>
+        <!--<fx:include source="local.fxml"/>-->
+    </center>
+    <!--<bottom>
+        <StackPane alignment="CENTER" BorderPane.alignment="BOTTOM_CENTER">
+            <Group StackPane.alignment="CENTER">
+                <Button mnemonicParsing="false" text="开始编译" fx:id="compileButton" onAction="#compileAction"/>
+            </Group>
+        </StackPane>
+    </bottom>-->
+</BorderPane>
+

@@ -1,0 +1,46 @@
+.right-panel {
+    -fx-padding: 5;
+}
+
+.right-panel > .sample-name {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.right-panel > .separator {
+    -fx-padding: 5 0 5 0;
+}
+
+.right-panel > .description {
+    -fx-text-alignment: justify;
+}
+
+.right-panel > * > .project-name-title,
+.right-panel > * > .property {
+    -fx-font-weight: bold;
+}
+
+.right-panel > * > .project-name {
+    -fx-text-alignment: justify;
+}
+
+/*
+ * The area beneath the description specifically to allow people to interact with
+ * the sample.
+ */
+.right-panel > .control-panel {
+    -fx-padding: 5 0 0 0;
+}
+
+
+.error {
+    -fx-effect: dropshadow(three-pass-box, darkred, 7, 0, 0, 0);
+}
+
+.warning {
+    -fx-effect: dropshadow(three-pass-box, gold, 14, 0, 0, 0);
+}
+
+.info {
+    -fx-effect: dropshadow(three-pass-box, skyblue, 14, 0, 0, 0);
+}

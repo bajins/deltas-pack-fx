@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bajins.deltaspackfx.TestSpanner"
+            prefHeight="400.0" prefWidth="600.0">
+    <Label text="按天数：" GridPane.halignment="RIGHT" GridPane.rowIndex="7" GridPane.valignment="CENTER"/>
+    <Spinner GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="7" min="1" max="365"
+             amountToStepBy="1" editable="true" prefWidth="370.0" fx:id="days">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+        <valueFactory>
+            <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="20" initialValue="10"/>
+        </valueFactory>
+    </Spinner>
+</AnchorPane>

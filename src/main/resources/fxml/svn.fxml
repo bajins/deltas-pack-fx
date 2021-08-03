@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.controlsfx.control.CheckComboBox?>
+<?import java.lang.*?>
+
+<?import javafx.scene.Group?>
+
+<GridPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.bajins.deltaspackfx.controller.SvnController" alignment="center" fx:id="gridPane">
+    <columnConstraints><!-- 宽 -->
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="129.0" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="220.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="80.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="80.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="80.0"/>
+    </columnConstraints>
+    <rowConstraints><!-- 高 -->
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+
+    <Label text="项目路径：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="0"/>
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="0" fx:id="projectPath"
+               editable="false">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="0" text="浏览" fx:id="projectPathBtn"/>
+
+    <Label text="源码目录：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="1"/>
+    <!-- promptText等于HTML中的placeholder -->
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" fx:id="sourcePath"
+               promptText="默认: src"
+               editable="false">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="1" text="浏览" fx:id="sourcePathBtn"/>
+
+    <Label text="资源目录：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="2"/>
+    <ComboBox GridPane.rowSpan="1" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="2"
+              promptText="默认: webapp" editable="false" fx:id="targetPath">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="WebContent"/>
+                <String fx:value="WebRoot"/>
+                <String fx:value="webapp"/>
+                <String fx:value="web"/>
+            </FXCollections>
+        </items>
+        <!--<value>
+            <String fx:value="WebContent"/>
+        </value>-->
+    </ComboBox>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="2" text="浏览" fx:id="targetPathBtn"/>
+
+    <Label text="配置目录：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="3"/>
+    <ListView fx:id="configList" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="3">
+        <placeholder>
+            <Label text="properties、yaml、xml等文件的目录"/>
+        </placeholder>
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </ListView>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="3" text="新增" fx:id="configAddBtn"/>
+
+    <Label text="编译输出：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="4"/>
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" fx:id="classesPath"
+               editable="false"
+               promptText="默认: webapp/WEB-INF/classes">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="4" text="浏览" fx:id="classesPathBtn"/>
+
+    <Label text="存储路径：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="5"/>
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="5" fx:id="outPath" editable="false"
+               promptText="默认: 当前目录">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="5" text="浏览" fx:id="outPathBtn"/>
+
+    <Label text="开始日期：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="6"/>
+    <DatePicker GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="6" editable="false"
+                fx:id="startDay">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </DatePicker>
+
+    <Label text="结束日期：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="7"/>
+    <DatePicker GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="7" editable="false"
+                fx:id="endDay" promptText="不选，默认今天">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </DatePicker>
+
+    <Label text="SVN地址：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="8"/>
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" fx:id="svnUrl">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+
+    <Label text="SVN账户：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="9"/>
+    <TextField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="9" fx:id="svnUser">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </TextField>
+
+    <Label text="SVN密码：" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.rowIndex="10"/>
+    <PasswordField GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="10" fx:id="svnPwd">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </PasswordField>
+    <Button GridPane.columnIndex="4" GridPane.rowIndex="10" text="验证" fx:id="validateSvnBtn"/>
+
+    <Label text="开发人员：" GridPane.halignment="RIGHT" GridPane.rowIndex="11" GridPane.valignment="CENTER"/>
+    <!--<ChoiceBox GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+                <String fx:value="dev62"/>
+                <String fx:value="dev102"/>
+                <String fx:value="dev103"/>
+            </FXCollections>
+        </items>
+    </ChoiceBox>-->
+    <CheckComboBox GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="11" fx:id="developer">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </CheckComboBox>
+
+    <Label text="版本：" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER"/>
+    <CheckComboBox GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="12" fx:id="svnVersion">
+        <GridPane.margin>
+            <Insets left="20.0" right="50.0"/>
+        </GridPane.margin>
+    </CheckComboBox>
+
+    <StackPane GridPane.halignment="CENTER" GridPane.valignment="CENTER" BorderPane.alignment="BOTTOM_CENTER"
+               GridPane.rowIndex="100" GridPane.columnSpan="6" fx:id="bottomStackPane" prefHeight="60">
+        <Group StackPane.alignment="CENTER">
+            <Button mnemonicParsing="false" text="开始构建" fx:id="compileButton" onAction="#compileAction"/>
+        </Group>
+    </StackPane>
+
+</GridPane>
+
