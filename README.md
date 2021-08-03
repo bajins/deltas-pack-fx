@@ -2,7 +2,7 @@
 
 JavaFX方式增量打包SVN/GIT
 
-**必须依照结构：eclipse、idea、Maven等所创建的项目**
+**必须依照Eclipse、IDEA、Maven、Gradle等所创建的项目结构**
 
 
 参考
@@ -46,7 +46,7 @@ TODO
 
 支持Maven，思路：如果没有选择Maven目录，先查找项目中是否有创建项目时生成的相关脚本，如果没有则使用全局变量，如果还没有就查找变量中是否有Maven目录，没有则报错Maven路径必须选择
 
-gradle思路暂时与Maven一致
+Gradle思路暂时与Maven一致
 
 
 Screenshot
