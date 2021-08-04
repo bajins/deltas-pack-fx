@@ -1,5 +1,6 @@
 package com.bajins.deltaspackfx.common;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -58,9 +59,12 @@ public class ProgressFrom {
      * 激活加载层
      */
     public void activateProgressBar() {
-        dialogStage.setX(ownerStage.getX()); // 更新坐标位置
-        dialogStage.setY(ownerStage.getY());
-        dialogStage.show();
+        // 通过Platform刷新UI，以解决在独立线程中执行错误
+        Platform.runLater(() -> {
+            dialogStage.setX(ownerStage.getX()); // 更新坐标位置
+            dialogStage.setY(ownerStage.getY());
+            dialogStage.show();
+        });
     }
 
     public Stage getDialogStage() {
@@ -71,6 +75,7 @@ public class ProgressFrom {
      * 取消加载层
      */
     public void cancelProgressBar() {
-        dialogStage.close();
+        // 通过Platform刷新UI，以解决在独立线程中执行错误
+        Platform.runLater(dialogStage::close);
     }
 }

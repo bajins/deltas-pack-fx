@@ -300,7 +300,7 @@ public class LocalController implements Initializable {
      */
     public BaseFormVO checkForm() {
         if (VALIDATION_SUPPORT.isInvalid() || DATE_VALIDATION_SUPPORT.isInvalid()) { // 校验值
-            // 通过Platform刷新UI
+            // 通过Platform刷新UI，以解决在独立线程中执行错误
             Platform.runLater(() -> {
                 VALIDATION_SUPPORT.setValidationDecorator(COMPOUND_VALIDATION_DECORATION); // 设置装饰样式
                 VALIDATION_SUPPORT.initInitialDecoration(); // 初始化装饰
@@ -354,6 +354,7 @@ public class LocalController implements Initializable {
 
             BaseFormVO formVO = checkForm();
             if (formVO == null) {
+                PROGRESS_FROM.cancelProgressBar();
                 return;
             }
             List<String> msg = new ArrayList<>();
@@ -375,7 +376,7 @@ public class LocalController implements Initializable {
                         }
                     }
                 });
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> {
                     if (!msg.isEmpty()) {
                         FxDialogs.showError("编译错误", String.join(File.separator, msg));
@@ -384,11 +385,10 @@ public class LocalController implements Initializable {
                     }
                 });
             } catch (IOException e) {
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> FxDialogs.showException(e.getMessage(), e));
             } finally {
-                // 通过Platform刷新UI
-                Platform.runLater(PROGRESS_FROM::cancelProgressBar);
+                PROGRESS_FROM.cancelProgressBar();
             }
         }).start();
     }

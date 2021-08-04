@@ -30,7 +30,7 @@ public class TestLoading extends Application {
         new Thread(() -> {
             // TODO: 这里执行自己的逻辑
 
-            // 通过Platform刷新UI
+            // 通过Platform刷新UI，以解决在独立线程中执行错误
             Platform.runLater(() -> {
                 /*try {
                     Parent root = FXMLLoader.load(Main.class.getResource("FXMLDocument.fxml"));

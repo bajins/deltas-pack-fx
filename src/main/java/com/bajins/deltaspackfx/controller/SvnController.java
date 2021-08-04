@@ -115,7 +115,7 @@ public class SvnController extends LocalController {
         String svnPwdText = svnPwd.getText();
 
         if (VALIDATION_SUPPORT.isInvalid() || DATE_VALIDATION_SUPPORT.isInvalid() || SVN_VALIDATION_SUPPORT.isInvalid()) { // 校验值
-            // 通过Platform刷新UI
+            // 通过Platform刷新UI，以解决在独立线程中执行错误
             Platform.runLater(() -> {
                 VALIDATION_SUPPORT.setValidationDecorator(COMPOUND_VALIDATION_DECORATION); // 设置装饰样式
                 VALIDATION_SUPPORT.initInitialDecoration(); // 初始化装饰
@@ -162,7 +162,7 @@ public class SvnController extends LocalController {
                 }
             }*/
         } catch (SVNException e) {
-            // 通过Platform刷新UI
+            // 通过Platform刷新UI，以解决在独立线程中执行错误
             Platform.runLater(() -> {
                 if (!hasSvnUrlText) {
                     Decorator.addDecoration(svnUrl, CLASS_DECORATION_ERROR); // 添加装饰样式
@@ -173,7 +173,7 @@ public class SvnController extends LocalController {
             });
             return false;
         }
-        // 通过Platform刷新UI
+        // 通过Platform刷新UI，以解决在独立线程中执行错误
         Platform.runLater(() -> {
             Decorator.removeDecoration(svnUrl, CLASS_DECORATION_ERROR); // 移除装饰样式
             Decorator.removeDecoration(svnUser, CLASS_DECORATION_ERROR); // 移除装饰样式
@@ -191,6 +191,7 @@ public class SvnController extends LocalController {
 
         new Thread(() -> { // 开启新线程操作
             if (!checkSvnInfo()) {
+                PROGRESS_FROM.cancelProgressBar();
                 return;
             }
             try {
@@ -204,7 +205,7 @@ public class SvnController extends LocalController {
                 long startVersion = svnkitClient.getRepository().getDatedRevision(date); // 根据时间查找版本
                 long latestRevision = svnkitClient.getRepository().getLatestRevision(); // 最新一个版本
 
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> {
                     developer.setDisable(false);
                     developer.getItems().clear();
@@ -216,11 +217,10 @@ public class SvnController extends LocalController {
                     svnVersion.getItems().addAll(FXCollections.observableArrayList(collect));
                 });
             } catch (SVNException e) {
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> FxDialogs.showError("请检查SVN地址、账户、密码", e.getMessage()));
             } finally {
-                // 通过Platform刷新UI
-                Platform.runLater(PROGRESS_FROM::cancelProgressBar);
+                PROGRESS_FROM.cancelProgressBar();
             }
         }).start();
     }
@@ -234,9 +234,11 @@ public class SvnController extends LocalController {
         new Thread(() -> { // 开启新线程操作
             BaseFormVO formVO = checkForm();
             if (formVO == null) {
+                PROGRESS_FROM.cancelProgressBar();
                 return;
             }
             if (!checkSvnInfo()) {
+                PROGRESS_FROM.cancelProgressBar();
                 return;
             }
             ObservableList developers = developer.getCheckModel().getCheckedItems();
@@ -282,7 +284,7 @@ public class SvnController extends LocalController {
                         }
                     }
                 }
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> {
                     if (!msg.isEmpty()) {
                         FxDialogs.showError("编译错误", String.join(File.separator, msg));
@@ -291,11 +293,10 @@ public class SvnController extends LocalController {
                     }
                 });
             } catch (SVNException e) {
-                // 通过Platform刷新UI
+                // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> FxDialogs.showException(e.getMessage(), e));
             } finally {
-                // 通过Platform刷新UI
-                Platform.runLater(PROGRESS_FROM::cancelProgressBar);
+                PROGRESS_FROM.cancelProgressBar();
             }
         }).start();
     }
