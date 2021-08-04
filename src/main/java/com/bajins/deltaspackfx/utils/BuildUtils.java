@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.tools.*;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -32,7 +33,18 @@ public class BuildUtils {
         String javaHome = System.getProperty("java.home");
         String jrePath = File.separator + "jre";
         if (javaHome.contains(jrePath)) {
-            System.setProperty("java.home", javaHome.replace(jrePath, File.separator + "jdk"));
+            String jdkHome = javaHome.replace(jrePath, File.separator + "jdk");
+            File jdkFile = new File(jdkHome);
+            if (!jdkFile.exists()) { // 如果JDK目录不存在，则找父目录下的其他JDK目录
+                File parentFile = new File(jdkFile.getParent());
+                if (parentFile.exists()) {
+                    String[] jdks = parentFile.list((dir, name) -> name.contains("jdk"));
+                    if (jdks != null && jdks.length > 0) { // 如果找到JDK目录
+                        jdkHome = parentFile.getAbsolutePath() + File.separator + jdks[0];
+                        System.setProperty("java.home", jdkHome);
+                    }
+                }
+            }
         }
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         if (javaCompiler == null) {
