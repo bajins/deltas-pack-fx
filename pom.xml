@@ -102,8 +102,53 @@
     </dependencies>
 
     <build>
+        <!-- https://maven.apache.org/plugins/index.html -->
         <plugins>
-            <!-- =============== 打包：依赖jar包和资源打包到一个jar包中 =============== -->
+            <!-- 指定项目java编译版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <!-- =============== 自定义的结构打包：依赖资源打包到一个jar包中 =============== -->
+            <!-- https://maven.apache.org/plugins/maven-assembly-plugin -->
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        &lt;!&ndash; 绑定到package生命周期 &ndash;&gt;
+                        <phase>package</phase>
+                        <goals>
+                            &lt;!&ndash; 只运行一次 &ndash;&gt;
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    &lt;!&ndash; 生成可运行jar包 &ndash;&gt;
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.bajins.deltaspackfx.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    &lt;!&ndash; 配置描述符文件 &ndash;&gt;
+                    &lt;!&ndash;<descriptor>src/main/assembly/assembly.xml</descriptor>&ndash;&gt;
+                    &lt;!&ndash; 也可以使用Maven预配置的描述符 &ndash;&gt;
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>-->
+
+            <!-- =============== 打fat-jar(uber-jar)包：依赖资源打包到一个jar包中 =============== -->
+            <!-- https://maven.apache.org/plugins/maven-shade-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -115,6 +160,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <createSourcesJar>false</createSourcesJar>
+                            <shadeSourcesContent>true</shadeSourcesContent>
+                            <!-- 自动将所有不使用的类排除 -->
+                            <minimizeJar>true</minimizeJar>
                             <!-- http://maven.apache.org/plugins/maven-shade-plugin/examples/resource-transformers.html -->
                             <transformers>
                                 <transformer
@@ -127,6 +178,74 @@
                 </executions>
             </plugin>
 
+            <!-- =============== 打普通的project JAR包：依赖jar包复制到文件夹中，资源打包到jar包中 =============== -->
+            <!-- https://maven.apache.org/plugins/maven-jar-plugin -->
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            &lt;!&ndash; Main class main方法 &ndash;&gt;
+                            <mainClass>com.bajins.deltaspackfx.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>-->
+            <!-- https://maven.apache.org/plugins/maven-dependency-plugin -->
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <type>jar</type>
+                            <includeTypes>jar</includeTypes>
+                            &lt;!&ndash; 依赖拷贝到 lib 中 &ndash;&gt;
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!-- https://maven.apache.org/plugins/maven-resources-plugin/plugin-info.html -->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/extra</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <!-- https://openjfx.io/openjfx-docs/#maven -->
             <!--<plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -142,6 +261,28 @@
                     <mainClass>Main</mainClass>
                 </configuration>
             </plugin>-->
+
+            <!-- https://github.com/javafx-maven-plugin/javafx-maven-plugin -->
+            <!--<plugin>
+                <groupId>com.zenjava</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>8.8.3</version>
+                <configuration>
+                    <vendor>bajins</vendor>
+                    <mainClass>com.bajins.deltaspackfx.Main</mainClass>
+                </configuration>
+            </plugin>-->
+
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

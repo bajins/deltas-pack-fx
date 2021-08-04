@@ -384,7 +384,7 @@ public class LocalController implements Initializable {
                         FxDialogs.showInformation("编译完成");
                     }
                 });
-            } catch (IOException e) {
+            } catch (IOException | IllegalStateException e) {
                 // 通过Platform刷新UI，以解决在独立线程中执行错误
                 Platform.runLater(() -> FxDialogs.showException(e.getMessage(), e));
             } finally {

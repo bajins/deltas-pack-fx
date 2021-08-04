@@ -22,9 +22,30 @@ import java.util.stream.Stream;
 public class BuildUtils {
 
     /**
+     * 获取JavaCompiler
+     *
+     * <a href="https://stackoverflow.com/questions/15513330/toolprovider-getsystemjavacompiler-returns-null-usable-with-only-jre-install"></a>
+     *
+     * @return
+     */
+    public static JavaCompiler getJavaCompiler() {
+        String javaHome = System.getProperty("java.home");
+        String jrePath = File.separator + "jre";
+        if (javaHome.contains(jrePath)) {
+            System.setProperty("java.home", javaHome.replace(jrePath, File.separator + "jdk"));
+        }
+        JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
+        if (javaCompiler == null) {
+            throw new IllegalStateException("请检查JDK环境变量设置，当前环境变量：“" + javaHome + "”，需要“jdk/lib/tools.jar”");
+        }
+        return javaCompiler;
+    }
+
+    /**
      * 编译文件 <br/>
      * https://pfmiles.github.io/blog/dynamic-java<br/>
-     * https://docs.oracle.com/javase/8/docs/api/javax/tools/package-summary.html
+     * https://docs.oracle.com/javase/8/docs/api/javax/tools/package-summary.html<br/>
+     * https://docs.oracle.com/javase/8/docs/api/javax/tools/JavaCompiler.html
      *
      * @param errors
      * @param javaFiles   要编译的Java源码文件，如果为空，则编译整个源码文件目录
@@ -35,7 +56,7 @@ public class BuildUtils {
      */
     public static boolean compiler(DiagnosticCollector<JavaFileObject> errors, List<File> javaFiles, String libs,
                                    String classesPath, String sourceDir) throws IOException {
-        JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
+        JavaCompiler javaCompiler = getJavaCompiler();
         // 第一个参数：输入，默认System.in；第二个参数：输出，默认System.out；第三个参数：错误输出，默认System.err
         // 返回 0 表示成功， 其他表示出现了错误
         //int i = javaCompiler.run(null, null, null, "-encoding", "UTF-8", "-d", ".", "test/Hello.java");
@@ -66,7 +87,8 @@ public class BuildUtils {
     /**
      * 编译文件<br/>
      * https://pfmiles.github.io/blog/dynamic-java<br/>
-     * https://docs.oracle.com/javase/8/docs/api/javax/tools/package-summary.html
+     * https://docs.oracle.com/javase/8/docs/api/javax/tools/package-summary.html<br/>
+     * https://docs.oracle.com/javase/8/docs/api/javax/tools/JavaCompiler.html
      *
      * @param errors
      * @param javaFiles   要编译的Java源码文件，如果为空，则编译整个源码文件目录
@@ -77,7 +99,7 @@ public class BuildUtils {
      */
     public static boolean compiler(DiagnosticCollector<JavaFileObject> errors, List<File> javaFiles,
                                    List<File> libList, String classesPath, String sourceDir) throws IOException {
-        JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
+        JavaCompiler javaCompiler = getJavaCompiler();
         // 编译文件
         try (StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(errors, null, null)) {
             /*JavaFileManager fm = new ForwardingJavaFileManager(fileManager) {
@@ -294,7 +316,7 @@ public class BuildUtils {
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
-
+                        System.out.println(e.getMessage());
                     }
                 }
             });

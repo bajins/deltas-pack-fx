@@ -4,6 +4,9 @@ JavaFX方式增量打包SVN/GIT
 
 **必须依照Eclipse、IDEA、Maven、Gradle等所创建的项目结构**
 
+**需要JDK1.8+**
+
+
 
 参考
 ===
