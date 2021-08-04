@@ -8,7 +8,7 @@
     <groupId>com.bajins</groupId>
     <!-- The name of the artifact within the group,usually a project name -->
     <artifactId>deltas-pack-fx</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>deltas-pack-fx</name>
     <packaging>jar</packaging>
 
