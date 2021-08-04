@@ -32,8 +32,6 @@ public class ProgressFrom {
         dialogStage.initStyle(StageStyle.UNDECORATED);
         dialogStage.initStyle(StageStyle.TRANSPARENT);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.setWidth(ownerStage.getWidth()); // 同步父窗口宽度
-        dialogStage.setHeight(ownerStage.getHeight()); // 同步父窗口高度
         dialogStage.setOpacity(0.9); // 透明度
         // progress bar
         Label label = new Label("请稍后...");
@@ -61,6 +59,8 @@ public class ProgressFrom {
     public void activateProgressBar() {
         // 通过Platform刷新UI，以解决在独立线程中执行错误
         Platform.runLater(() -> {
+            dialogStage.setWidth(ownerStage.getWidth()); // 同步父窗口宽度
+            dialogStage.setHeight(ownerStage.getHeight()); // 同步父窗口高度
             dialogStage.setX(ownerStage.getX()); // 更新坐标位置
             dialogStage.setY(ownerStage.getY());
             dialogStage.show();
