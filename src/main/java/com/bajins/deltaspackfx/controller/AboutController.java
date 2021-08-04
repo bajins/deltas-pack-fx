@@ -18,13 +18,18 @@ public class AboutController {
 
     public AboutController() {
 
-        Label pageHomeLabel = new Label("主页：");
+        Label pageHomeLabel = new Label("个人主页：");
         Hyperlink pageHomeLink = new Hyperlink("https://www.bajins.com");
         pageHomeLink.setOnAction(event -> browse(pageHomeLink.getText()));
 
         Label projectLabel = new Label("项目首页：");
         Hyperlink projectLink = new Hyperlink("https://github.com/bajins/deltas-pack-fx");
         projectLink.setOnAction(event -> browse(projectLink.getText()));
+
+        Label releasesLabel = new Label("版本更新：");
+        Hyperlink releasesLink = new Hyperlink("https://github.com/bajins/deltas-pack-fx/releases");
+        releasesLink.setOnAction(event -> browse(releasesLink.getText()));
+
         Label issueLabel = new Label("问题反馈：");
         Hyperlink issueLink = new Hyperlink("https://github.com/bajins/deltas-pack-fx/issues");
         issueLink.setOnAction(event -> browse(issueLink.getText()));
@@ -39,12 +44,15 @@ public class AboutController {
         gridPane.add(pageHomeLink, 2, 0);
         gridPane.add(projectLabel, 0, 1);
         gridPane.add(projectLink, 2, 1);
-        gridPane.add(issueLabel, 0, 2);
-        gridPane.add(issueLink, 2, 2);
+        gridPane.add(releasesLabel, 0, 2);
+        gridPane.add(releasesLink, 2, 2);
+        gridPane.add(issueLabel, 0, 3);
+        gridPane.add(issueLink, 2, 3);
 
         Insets insets = new Insets(10, 0, 10, 0);
         GridPane.setMargin(pageHomeLink, insets); // 间距
         GridPane.setMargin(projectLink, insets);
+        GridPane.setMargin(releasesLink, insets);
         GridPane.setMargin(issueLink, insets);
 
         Scene scene = new Scene(gridPane);
