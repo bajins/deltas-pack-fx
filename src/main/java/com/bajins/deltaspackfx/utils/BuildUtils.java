@@ -41,10 +41,10 @@ public class BuildUtils {
                     String[] jdks = parentFile.list((dir, name) -> name.contains("jdk"));
                     if (jdks != null && jdks.length > 0) { // 如果找到JDK目录
                         jdkHome = parentFile.getAbsolutePath() + File.separator + jdks[0];
-                        System.setProperty("java.home", jdkHome);
                     }
                 }
             }
+            System.setProperty("java.home", jdkHome);
         }
         JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
         if (javaCompiler == null) {
