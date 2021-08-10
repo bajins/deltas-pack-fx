@@ -31,6 +31,11 @@ public class MainController implements Initializable {
     @FXML
     private Button compileButton;
 
+    public Parent localPane = null;
+    public Parent svnPane = null;
+    public LicenseController licenseController = null;
+    public AboutController aboutController = null;
+
     /**
      * 会在Application.start(Stage primaryStage) 方法前运行
      *
@@ -52,16 +57,20 @@ public class MainController implements Initializable {
         FxUtils.addStyleClass(label, "clicked-menu-label");
         svnMenu.getStyleClass().remove("clicked-menu"); // 移除样式
         svnMenuLabel.getStyleClass().remove("clicked-menu-label"); // 移除样式
-        try {
-            // 创建布局控件: 这里的root从FXML文件中加载进行初始化，这里FXMLLoader类用于加载FXML文件
-            Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/local.fxml")));
-            Main.root.setCenter(pane); // 切换BorderPane内容部分
-            //Main.topStage.setScene(new Scene(pane)); // 给当前窗口设置新的场景
-            /*BorderPane root = (BorderPane) Main.topStage.getScene().getRoot(); // 有无法强转的风险
-            root.setCenter(pane);*/
-        } catch (IOException e) {
-            FxDialogs.showException(e.getMessage(), e);
+        if (localPane == null) {
+            try {
+                // 创建布局控件: 这里的root从FXML文件中加载进行初始化，这里FXMLLoader类用于加载FXML文件
+                localPane = FXMLLoader.load(Objects.requireNonNull(MainController.class.getResource("/fxml/local" +
+                        ".fxml")));
+            } catch (IOException e) {
+                FxDialogs.showException(e.getMessage(), e);
+                return;
+            }
         }
+        Main.root.setCenter(localPane); // 切换BorderPane内容部分
+        //Main.topStage.setScene(new Scene(pane)); // 给当前窗口设置新的场景
+        /*BorderPane root = (BorderPane) Main.topStage.getScene().getRoot(); // 有无法强转的风险
+        root.setCenter(pane);*/
     }
 
     @FXML
@@ -74,23 +83,32 @@ public class MainController implements Initializable {
         FxUtils.addStyleClass(label, "clicked-menu-label");
         localMenu.getStyleClass().remove("clicked-menu"); // 移除样式
         localMenuLabel.getStyleClass().remove("clicked-menu-label"); // 移除样式
-        try {
-            // 创建布局控件: 这里的root从FXML文件中加载进行初始化，这里FXMLLoader类用于加载FXML文件
-            Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/svn.fxml")));
-            Main.root.setCenter(pane); // 切换BorderPane内容部分
-        } catch (IOException e) {
-            FxDialogs.showException(e.getMessage(), e);
+        if (svnPane == null) {
+            try {
+                // 创建布局控件: 这里的root从FXML文件中加载进行初始化，这里FXMLLoader类用于加载FXML文件
+                svnPane = FXMLLoader.load(Objects.requireNonNull(MainController.class.getResource("/fxml/svn.fxml")));
+            } catch (IOException e) {
+                FxDialogs.showException(e.getMessage(), e);
+                return;
+            }
         }
+        Main.root.setCenter(svnPane); // 切换BorderPane内容部分
     }
 
     @FXML
     public void clickLicensePane(ActionEvent event) { // 对应FXML文件中声明的onAction属性，以#开头
-        new LicenseController();
+        if (licenseController == null) {
+            licenseController = new LicenseController();
+        }
+        licenseController.show();
     }
 
     @FXML
     public void clickAboutPane(ActionEvent event) { // 对应FXML文件中声明的onAction属性，以#开头
-        new AboutController();
+        if (aboutController == null) {
+            aboutController = new AboutController();
+        }
+        aboutController.show();
     }
 
 }

@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 
 public class LicenseController {
 
+    private final Stage stage = new Stage();
+
     public LicenseController() {
 
         TextArea textArea = new TextArea();
@@ -33,7 +35,6 @@ public class LicenseController {
         Scene scene = new Scene(gridPane);
         //scene.setFill(Color.BLUE);
 
-        Stage stage = new Stage();
         stage.setScene(scene);
         // 窗口父子关系
         stage.initOwner(Main.topStage);
@@ -41,12 +42,19 @@ public class LicenseController {
         //stage.initStyle(StageStyle.UNDECORATED);
         //stage.initStyle(StageStyle.TRANSPARENT);
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setOpacity(1); // 透明度
+    }
+
+    public void show() {
         stage.setWidth(Main.topStage.getWidth()); // 同步父窗口宽度
         stage.setHeight(Main.topStage.getHeight()); // 同步父窗口高度
-        stage.setOpacity(1); // 透明度
         stage.setX(Main.topStage.getX()); // 更新坐标位置
         stage.setY(Main.topStage.getY());
         stage.show();
+    }
+
+    public void close() {
+        stage.close();
     }
 
     private void setText(TextArea textArea) {
