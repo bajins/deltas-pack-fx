@@ -7,6 +7,7 @@ import com.bajins.deltaspackfx.model.BaseFormVO;
 import com.bajins.deltaspackfx.utils.BuildUtils;
 import com.bajins.deltaspackfx.utils.FxUtils;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,6 +41,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class LocalController implements Initializable {
@@ -54,6 +56,10 @@ public class LocalController implements Initializable {
     protected TextField sourcePath; // 源码路径，默认: src
     @FXML
     protected Button sourcePathBtn;
+    @FXML
+    protected ListView libSourceList;
+    @FXML
+    protected Button libSourceAddBtn;
     @FXML
     protected ComboBox targetPath; // 资源目录，默认: WebContent
     @FXML
@@ -110,34 +116,39 @@ public class LocalController implements Initializable {
         });
         sourcePath.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton().compareTo(MouseButton.PRIMARY) == 0) { // 实现双击事件
-                clickDir("请选择一个源码文件夹", sourcePath);
+                clickDir("请选择一个源码文件夹", sourcePath, projectPath.getText());
             }
         });
-        sourcePathBtn.setOnAction(event -> clickDir("请选择一个源码文件夹", sourcePath));
+        sourcePathBtn.setOnAction(event -> clickDir("请选择一个源码文件夹", sourcePath, projectPath.getText()));
+
+        initListView(libSourceList, projectPath.widthProperty(), libSourceAddBtn, t -> clickDir("请选择一个依赖源码文件夹",
+                libSourceList, null));
+
         targetPath.prefWidthProperty().bind(projectPath.widthProperty()); // 绑定宽度
         targetPath.getSelectionModel().selectedItemProperty().addListener(e -> {
             classesPath.setPromptText("默认: " + targetPath.getSelectionModel().getSelectedItem() + "/WEB-INF/classes");
         });
         targetPathBtn.setOnAction(event -> {
-            clickDir("请选择存放静态资源的目录", targetPath);
+            clickDir("请选择存放静态资源的目录", targetPath, projectPath.getText());
             classesPath.setPromptText("默认: " + targetPath.getSelectionModel().getSelectedItem() + "/WEB-INF/classes");
         });
 
-        initConfigListView();
+        initListView(configList, projectPath.widthProperty(), configAddBtn, t -> clickDir("请选择一个配置文件夹", configList,
+                projectPath.getText()));
 
         classesPath.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton().compareTo(MouseButton.PRIMARY) == 0) { // 实现双击事件
-                clickDir("请选择一个编译输出文件夹", classesPath);
+                clickDir("请选择一个编译输出文件夹", classesPath, projectPath.getText());
             }
         });
-        classesPathBtn.setOnAction(event -> clickDir("请选择一个编译输出文件夹", classesPath));
+        classesPathBtn.setOnAction(event -> clickDir("请选择一个编译输出文件夹", classesPath, projectPath.getText()));
 
         outPath.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton().compareTo(MouseButton.PRIMARY) == 0) { // 实现双击事件
-                clickDir("请选择一个存储文件夹", outPath);
+                clickDir("请选择一个存储文件夹", outPath, projectPath.getText());
             }
         });
-        outPathBtn.setOnAction(event -> clickDir("请选择一个存储文件夹", outPath));
+        outPathBtn.setOnAction(event -> clickDir("请选择一个存储文件夹", outPath, projectPath.getText()));
 
         startDay.prefWidthProperty().bind(projectPath.widthProperty()); // 绑定宽度
 
@@ -203,12 +214,17 @@ public class LocalController implements Initializable {
     }
 
     /**
-     * 初始化配置列表元素
+     * 初始化列表元素
+     *
+     * @param listView
+     * @param widthProperty
+     * @param button
      */
-    private void initConfigListView() {
-        configList.prefWidthProperty().bind(projectPath.widthProperty()); // 绑定宽度
-        configList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // 设置按住Ctrl可多选
-        configList.setCellFactory(lv -> {
+    protected void initListView(ListView listView, ReadOnlyDoubleProperty widthProperty, Button button,
+                                Consumer<? super Void> action) {
+        listView.prefWidthProperty().bind(widthProperty); // 绑定宽度
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // 设置按住Ctrl可多选
+        listView.setCellFactory(lv -> {
             ListCell<Object> cell = new ListCell<Object>() {
                 @Override
                 protected void updateItem(Object item, boolean empty) {
@@ -224,32 +240,29 @@ public class LocalController implements Initializable {
                 if (event.getButton().compareTo(MouseButton.SECONDARY) == 0 && !cell.isEmpty()) { // 在一行上单击鼠标右键
                     Object item = cell.getItem();
                     if (FxDialogs.showConfirmDefaultIsYes("确认要删除吗？")) {
-                        configList.getItems().remove(item);
+                        listView.getItems().remove(item);
                     }
                 }
             });
             return cell;
         });
-        configList.setOnKeyReleased(event -> {
-            System.out.println(event.getCode());
+        listView.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) {
-                if (configList.getSelectionModel().getSelectedItem() == null) {
+                if (listView.getSelectionModel().getSelectedItem() == null) {
                     FxDialogs.showWarning("请先选中一行");
                     return;
                 }
                 if (FxDialogs.showConfirmDefaultIsYes("确认要删除吗？")) {
-                    configList.getItems().remove(configList.getSelectionModel().getSelectedIndex());
+                    listView.getItems().remove(listView.getSelectionModel().getSelectedIndex());
                 }
             }
         });
-        configList.setOnMouseClicked(event -> {
+        listView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton().compareTo(MouseButton.PRIMARY) == 0) { // 实现双击事件
-                clickDir("请选择一个配置文件夹", configList);
+                action.accept(null);
             }
         });
-        configAddBtn.setOnAction(event -> {
-            clickDir("请选择一个配置文件夹", configList);
-        });
+        button.setOnAction(event -> action.accept(null));
     }
 
     /**
@@ -258,15 +271,14 @@ public class LocalController implements Initializable {
      * @param title
      * @param node
      */
-    protected void clickDir(String title, Node node) {
+    protected void clickDir(String title, Node node, String projectPathText) {
         if (!checkProjectPath()) {
             return;
         }
-        String projectPathText = projectPath.getText();
         File file = FxUtils.borrowDirectoryPath(title, projectPathText);
         if (file != null && file.exists()) {
             String absolutePath = file.getAbsolutePath();
-            if (!absolutePath.startsWith(projectPathText)) {
+            if (StringUtils.isNotBlank(projectPathText) && !absolutePath.startsWith(projectPathText)) {
                 FxDialogs.showError("请选择项目路径中的文件夹");
                 return;
             }
@@ -367,8 +379,8 @@ public class LocalController implements Initializable {
                         }
                         try {
                             BuildUtils.processFile(f.toAbsolutePath().toString(), formVO.getProjectPath(), null,
-                                    formVO.getSourcePath(), formVO.getTargetPath(), configList.getItems(),
-                                    formVO.getOutPath(), formVO.getClassesPath());
+                                    formVO.getSourcePath(), libSourceList.getItems(), formVO.getTargetPath(),
+                                    configList.getItems(), formVO.getOutPath(), formVO.getClassesPath());
                         } catch (IOException e) {
                             msg.add(e.getMessage());
                         } catch (IllegalArgumentException e) {

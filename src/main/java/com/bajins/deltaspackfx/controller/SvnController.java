@@ -68,7 +68,7 @@ public class SvnController extends LocalController {
                 SvnkitClient.PROTOCOL_REGX.pattern(), Severity.ERROR)); // 输入框注册校验*/
         SVN_VALIDATION_SUPPORT.registerValidator(svnUrl, false, (Control c, String newValue) -> {
             boolean find = SvnkitClient.PROTOCOL_REGX.matcher(newValue).find();
-            return ValidationResult.fromErrorIf(svnUrl, "请输入正确的SVN地址", StringUtils.isNoneBlank(newValue) && !find);
+            return ValidationResult.fromErrorIf(svnUrl, "请输入正确的SVN地址", StringUtils.isNotBlank(newValue) && !find);
         }); // 输入框注册校验
         SVN_VALIDATION_SUPPORT.registerValidator(svnUser, Validator.createEmptyValidator("必填")); // 输入框注册校验
         SVN_VALIDATION_SUPPORT.registerValidator(svnPwd, Validator.createEmptyValidator("必填")); // 输入框注册校验
@@ -130,8 +130,10 @@ public class SvnController extends LocalController {
         File svnDir = new File(projectPath.getText() + File.separator + ".svn");
         File parentFile = svnDir.getParentFile();
         if ((!svnDir.exists() || !SvnOperationFactory.isVersionedDirectory(parentFile)) && hasSvnUrlText) {
-            FxDialogs.showError(projectPath.getText() + File.separator + "选中的文件夹不是SVN项目，且未输入SVN地址",
-                    "温馨提示：要么选择SVN项目，要么输入SVN地址；" + File.separator + "如果SVN地址输入框有值，则以此为主");
+            // 通过Platform刷新UI，以解决在独立线程中执行错误
+            Platform.runLater(() -> FxDialogs.showError(projectPath.getText()
+                    + "选中的文件夹不是SVN项目，且未输入SVN地址", "温馨提示：要么选择SVN项目，要么输入SVN地址；"
+                    + "如果SVN地址输入框有值，则以此为主"));
             return false;
         }
         if (hasSvnUrlText && null != svnkitClient) {
@@ -274,8 +276,8 @@ public class SvnController extends LocalController {
                             File file = new File(fullyPth); // 转换路径为当前系统的正常路径
                             try {
                                 BuildUtils.processFile(file.getAbsolutePath(), formVO.getProjectPath(), null,
-                                        formVO.getSourcePath(), formVO.getTargetPath(), configList.getItems(),
-                                        formVO.getOutPath(), formVO.getClassesPath());
+                                        formVO.getSourcePath(), libSourceList.getItems(), formVO.getTargetPath(),
+                                        configList.getItems(), formVO.getOutPath(), formVO.getClassesPath());
                             } catch (IOException e) {
                                 msg.add(e.getMessage());
                             } catch (IllegalArgumentException e) {

@@ -109,7 +109,7 @@ public class FxUtils {
 
     public static File borrowDirectoryPath(String title, String initPath) {
         File file = null;
-        if (StringUtils.isNoneBlank(initPath)) {
+        if (StringUtils.isNotBlank(initPath)) {
             file = new File(initPath);
         }
         return borrowDirectoryPath(title, file);

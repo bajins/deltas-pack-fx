@@ -61,9 +61,9 @@ public class BuildUtils {
      *
      * @param errors
      * @param javaFiles   要编译的Java源码文件，如果为空，则编译整个源码文件目录
-     * @param libs        jar包文件，不能为文件夹，linux/mac 上cp分隔符使用: windows使用 ; 对应 File.pathSeparator
+     * @param libs        jar包文件，不能为文件夹，linux/mac上cp分隔符使用: windows使用; 对应File.pathSeparator
      * @param classesPath class输出目录
-     * @param sourceDir   源码文件目录
+     * @param sourceDir   源码文件目录，当有外部源码依赖时需要同时加入，linux/mac上cp分隔符使用: windows使用; 对应File.pathSeparator
      * @return
      */
     public static boolean compiler(DiagnosticCollector<JavaFileObject> errors, List<File> javaFiles, String libs,
@@ -106,11 +106,11 @@ public class BuildUtils {
      * @param javaFiles   要编译的Java源码文件，如果为空，则编译整个源码文件目录
      * @param libList     jar包文件，不能为文件夹
      * @param classesPath class输出目录
-     * @param sourceDir   源码文件目录
+     * @param sourceFiles 源码文件目录，当有外部源码依赖时需要同时加入
      * @return
      */
     public static boolean compiler(DiagnosticCollector<JavaFileObject> errors, List<File> javaFiles,
-                                   List<File> libList, String classesPath, String sourceDir) throws IOException {
+                                   List<File> libList, String classesPath, List<File> sourceFiles) throws IOException {
         JavaCompiler javaCompiler = getJavaCompiler();
         // 编译文件
         try (StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(errors, null, null)) {
@@ -122,7 +122,7 @@ public class BuildUtils {
             fileManager.setLocation(StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File(classesPath)));
             // https://stackoverflow.com/questions/52601788/javacompiler-works-when-running-the-main-method-directly-but-not-when-running-sp
             fileManager.setLocation(StandardLocation.CLASS_PATH, libList); // 使用此方式替代在参数中添加-classpath参数
-            fileManager.setLocation(StandardLocation.SOURCE_PATH, Collections.singletonList(new File(sourceDir)));
+            fileManager.setLocation(StandardLocation.SOURCE_PATH, sourceFiles);
             // 获取编译单元
             Iterable<? extends JavaFileObject> compilationUnits =
                     fileManager.getJavaFileObjectsFromFiles(javaFiles); // 编译单元
@@ -140,19 +140,20 @@ public class BuildUtils {
     /**
      * 普通项目（不含maven、gradlew、ant）处理单个文件，java编译，静态文件和jar包直接复制
      *
-     * @param filePath         要处理的文件绝对路径
-     * @param projectPath      项目绝对路径
-     * @param projectName      项目名，可以包含在项目绝对路径中，为空默认取项目绝对路径最后一个目录名称
-     * @param sourceDir        源码目录，相对于项目路径，如：src
-     * @param resourcesDirList 资源目录，相对于项目路径，如：src/main/resources、config，子文件夹和文件会复制到classesPath中
-     * @param targetDir        静态文件目录，相对于项目路径，如：WebContent；注意：普通项目路径为 项目名/WebContent
-     * @param outPath          存储路径，默认: 当前目录
-     * @param classesPath      编译输出，相对于项目路径，如: WebContent/WEB-INF/classes
+     * @param filePath          要处理的文件绝对路径
+     * @param projectPath       项目绝对路径
+     * @param projectName       项目名，可以包含在项目绝对路径中，为空默认取项目绝对路径最后一个目录名称
+     * @param sourceDir         源码目录，相对于项目路径，如：src
+     * @param libSourcesDirList 依赖源码目录，其他项目的src目录
+     * @param resourcesDirList  资源目录，相对于项目路径，如：src/main/resources、config，子文件夹和文件会复制到classesPath中
+     * @param targetDir         静态文件目录，相对于项目路径，如：WebContent；注意：普通项目路径为 项目名/WebContent
+     * @param outPath           存储路径，默认: 当前目录
+     * @param classesPath       编译输出，相对于项目路径，如: WebContent/WEB-INF/classes
      * @throws IOException
      */
     public static void processFile(String filePath, String projectPath, String projectName, String sourceDir,
-                                   String targetDir, List<String> resourcesDirList, String outPath,
-                                   String classesPath) throws IOException {
+                                   List<File> libSourcesDirList, String targetDir, List<String> resourcesDirList,
+                                   String outPath, String classesPath) throws IOException {
         // 忽略大小写
         Pattern pattern = Pattern.compile("\\.(git|svn|maven|gradlew|idea|settings)|class", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(filePath);
@@ -227,11 +228,15 @@ public class BuildUtils {
                     });
                 }
             }
-            String oldSourcePathStr = oldSourcePath.toString();
+            List<File> sourceFiles = new ArrayList<>();
+            sourceFiles.add(oldSourcePath.toFile());
+            if (libSourcesDirList != null && !libSourcesDirList.isEmpty()) {
+                sourceFiles.addAll(libSourcesDirList);
+            }
             DiagnosticCollector<JavaFileObject> errors = new DiagnosticCollector<>();
 
             //boolean res = compiler(errors, javaFiles, libs.toString(), destClassesPath.toString(), oldSourcePathStr);
-            boolean res = compiler(errors, javaFiles, libList, destClassesPath.toString(), oldSourcePathStr);
+            boolean res = compiler(errors, javaFiles, libList, destClassesPath.toString(), sourceFiles);
             if (!res) {
                 StringJoiner errorStringJoiner = new StringJoiner(File.separator);
                 for (Diagnostic diagnostic : errors.getDiagnostics()) {
@@ -324,7 +329,7 @@ public class BuildUtils {
                     System.out.println(f);
                     try {
                         processFile(f.toAbsolutePath().toString(), path.toAbsolutePath().toString(), null, "src",
-                                "webapp", Arrays.asList("config", "configdev"), "D:\\", null);
+                                null, "webapp", Arrays.asList("config", "configdev"), "D:\\", null);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (IllegalArgumentException e) {
